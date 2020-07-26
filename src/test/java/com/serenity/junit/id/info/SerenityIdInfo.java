@@ -1,4 +1,4 @@
-package com.serenity.junit;
+package com.serenity.junit.id.info;
 
 import io.restassured.RestAssured;
 import net.serenitybdd.junit.runners.SerenityRunner;
@@ -15,7 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 
 @RunWith(SerenityRunner.class)
-public class FirstSerenityClass {
+public class SerenityIdInfo {
 
     @BeforeClass
     public static void init(){
