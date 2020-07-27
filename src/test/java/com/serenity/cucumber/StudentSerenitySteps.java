@@ -1,5 +1,6 @@
 package com.serenity.cucumber;
 
+import com.serenity.utils.ReuseableSpecifications;
 import com.serenityrestassured.model.StudentClass;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
@@ -22,7 +23,7 @@ public class StudentSerenitySteps {
         student.setCourses(courses);
 
         return SerenityRest.rest().given()
-                .contentType(ContentType.JSON)
+                .spec(ReuseableSpecifications.getGenericRequestSpec())
                 .when()
                 .body(student)
                 .post("http://localhost:8085/student")
@@ -55,7 +56,7 @@ public class StudentSerenitySteps {
         student.setCourses(courses);
 
         return SerenityRest.rest().given()
-                .contentType(ContentType.JSON)
+                .spec(ReuseableSpecifications.getGenericRequestSpec())
                 .log()
                 .all()
                 .when()

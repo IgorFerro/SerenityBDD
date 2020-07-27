@@ -2,6 +2,7 @@ package com.serenity.junit.id.info;
 
 import com.serenity.cucumber.StudentSerenitySteps;
 import com.serenity.testbase.TestBase;
+import com.serenity.utils.ReuseableSpecifications;
 import com.serenity.utils.TestUtils;
 import com.serenityrestassured.model.StudentClass;
 import io.restassured.http.ContentType;
@@ -42,6 +43,7 @@ public class StudentsCrudTest extends TestBase {
         courses.add("C++");
 
         steps.createStudent(firstName, lastName, email, programme, courses).statusCode(201);
+        //.spec(ReuseableSpecifications.getGenericResponseSpec());
 
 
 
