@@ -1,11 +1,13 @@
 package com.serenity.junit.id.info;
 
+import com.serenity.cucumber.StudentSerenitySteps;
 import com.serenity.testbase.TestBase;
 import com.serenity.utils.TestUtils;
 import com.serenityrestassured.model.StudentClass;
 import io.restassured.http.ContentType;
 import net.serenitybdd.junit.runners.SerenityRunner;
 import net.serenitybdd.rest.SerenityRest;
+import net.thucydides.core.annotations.Steps;
 import net.thucydides.core.annotations.Title;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -28,6 +30,10 @@ public class StudentsCrudTest extends TestBase {
     static String email = TestUtils.getRandomValue()+"IGOR_USER@email.com";
     static int studentId;
 
+
+    @Steps
+    StudentSerenitySteps steps;
+
     @Title("This will create a new student")
     @Test
     public void test001(){
@@ -35,45 +41,16 @@ public class StudentsCrudTest extends TestBase {
         courses.add("Java");
         courses.add("C++");
 
-        StudentClass student = new StudentClass();
-        student.setFirstName(firstName);
-        student.setLastName(lastName);
-        student.setEmail(email);
-        student.setProgramme(programme);
-        student.setCourses(courses);
+        steps.createStudent(firstName, lastName, email, programme, courses).statusCode(201);
 
-        SerenityRest.rest().given()
-                .contentType(ContentType.JSON)
-                .log()
-                .all()
-                .when()
-                .body(student)
-                .post("http://localhost:8085/student")
-                .then()
-                .log()
-                .all()
-                .statusCode(201);
+
 
     }
     @Title("Verify if the student was added to the application")
     @Test
     public void test002(){
 
-        String p1 = "findAll{it.firstName=='";
-        String p2= "'}.get(0)";
-
-        HashMap<String,Object> value = SerenityRest.given()
-                .when()
-                .get("http://localhost:8085/student/list")
-                .then()
-                .log()
-                .all()
-                .statusCode(200)
-                .extract()
-                .path(p1+firstName+p2);
-
-        System.out.println("The value is: "+value);
-
+        HashMap<String,Object> value = steps.getStudentInfoByFirstName(firstName);
         assertThat(value,hasValue(firstName));
         studentId = (int) value.get("id");
     }
