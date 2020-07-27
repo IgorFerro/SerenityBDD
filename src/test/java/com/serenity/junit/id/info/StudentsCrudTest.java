@@ -58,66 +58,22 @@ public class StudentsCrudTest extends TestBase {
     @Test
     public void test003(){
 
-        String p1 = "findAll{it.firstName=='";
-        String p2= "'}.get(0)";
-
         ArrayList<String> courses = new ArrayList<>();
         courses.add("Java");
         courses.add("C++");
 
         firstName=firstName+"_Updated";
+        steps.updateStudent(studentId, firstName,lastName,email,programme, courses);
 
-        StudentClass student = new StudentClass();
-        student.setFirstName(firstName);
-        student.setLastName(lastName);
-        student.setEmail(email);
-        student.setProgramme(programme);
-        student.setCourses(courses);
 
-        SerenityRest.rest().given()
-                .contentType(ContentType.JSON)
-                .log()
-                .all()
-                .when()
-                .body(student)
-                .put("http://localhost:8085/student/"+studentId)
-                .then()
-                .log()
-                .all();
-
-        HashMap<String,Object> value = SerenityRest.given()
-                .when()
-                .get("http://localhost:8085/student/list")
-                .then()
-                .log()
-                .all()
-                .statusCode(200)
-                .extract()
-                .path(p1+firstName+p2);
-
-        System.out.println("The value is: "+value);
-
+        HashMap<String,Object> value = steps.getStudentInfoByFirstName(firstName);
         assertThat(value,hasValue(firstName));
     }
     @Title("Delete the student an verify if student deleted!")
     @Test
     public void test004(){
-        SerenityRest
-                .rest()
-                .given()
-                .when()
-                .delete("http://localhost:8085/student/"+studentId);
-
-        SerenityRest
-                .rest()
-                .given()
-                .when()
-                .get("http://localhost:8085/student/"+studentId).then()
-                .log()
-                .all()
-                .statusCode(404);
-
-
+        steps.deleteStudent(studentId);
+        steps.getStudentById(studentId).statusCode(404);
     }
 
 }

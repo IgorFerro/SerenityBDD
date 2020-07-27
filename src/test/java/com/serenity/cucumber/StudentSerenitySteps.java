@@ -13,6 +13,7 @@ public class StudentSerenitySteps {
 
     @Step("Creating student with firstName:{0}, lastName:{1}, email:{2}, programme:{3}, courses:{4}")
     public ValidatableResponse createStudent(String firstName, String lastName, String email, String programme,List<String>courses){
+
         StudentClass student = new StudentClass();
         student.setFirstName(firstName);
         student.setLastName(lastName);
@@ -42,6 +43,42 @@ public class StudentSerenitySteps {
                 .statusCode(200)
                 .extract()
                 .path(p1+firstName+p2);
+    }
+    @Step("Updating student information with studentID: {0} firstName:{1}, lastName:{2}, email:{3}, programme:{4}, courses:{5}")
+    public ValidatableResponse updateStudent(int studentId ,String firstName, String lastName, String email, String programme,List<String>courses){
+
+        StudentClass student = new StudentClass();
+        student.setFirstName(firstName);
+        student.setLastName(lastName);
+        student.setEmail(email);
+        student.setProgramme(programme);
+        student.setCourses(courses);
+
+        return SerenityRest.rest().given()
+                .contentType(ContentType.JSON)
+                .log()
+                .all()
+                .when()
+                .body(student)
+                .put("http://localhost:8085/student/"+studentId)
+                .then()
+                .log()
+                .all();
+    }
+
+    @Step("Deleting student information with ID: {0}")
+    public void deleteStudent(int studentId){
+        SerenityRest.rest().given().when().delete("http://localhost:8085/student/"+studentId);
+    }
+
+    @Step("Getting information of student with ID: {0}")
+    public ValidatableResponse getStudentById(int studentId){
+        return
+                SerenityRest
+                        .rest()
+                        .given()
+                        .when()
+                        .get("http://localhost:8085/student/"+studentId).then();
     }
 
 }
